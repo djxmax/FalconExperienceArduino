@@ -5,6 +5,7 @@
   This example code is in the public domain.
 */
 
+int inputSize = 6;
 String inputName[] = {"B1", "B2", "B3", "B4", "B5", "B6"};
 int inputPin[] = {1, 2, 3, 4, 5, 6};
 int inputState[] = {0, 0, 0, 0, 0, 0};
@@ -23,9 +24,9 @@ void setup() {
   Serial.begin(9600);
   Serial.println("Init...");
 
-  /*for (int thisPin = 0; thisPin < sizeof(inputPin); thisPin++) {
+  for (int thisPin = 0; thisPin < inputSize; thisPin++) {
     pinMode(inputPin[thisPin], INPUT);
-    }*/
+  }
 
   for (int thisPin = 0; thisPin < outputSize; thisPin++) {
     pinMode(outputPin[thisPin], OUTPUT);
@@ -126,6 +127,17 @@ void processBlink() {
     }
 
 
+  }
+}
+
+void processInputData() {
+  for (int theItem = 0; theItem < sizeof(inputName); theItem++) {
+    int pin = inputPin[theItem];
+    int val = digitalRead(pin);
+    if (inputState[theItem] != val) {
+      //todo send
+      inputPin[theItem] = val;
+    }
   }
 }
 
