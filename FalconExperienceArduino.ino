@@ -1,31 +1,32 @@
 /*
-  DigitalReadSerial
-  Reads a digital input on pin 2, prints the result to the serial monitor
+  The Falcon Experience Arduino
+  https://www.facebook.com/thefalconexperience/
 
-  This example code is in the public domain.
 */
 
 int inputSize = 6;
 String inputName[] = {"B1", "B2", "B3", "B4", "B5", "B6"};
-int inputPin[] = {1, 2, 3, 4, 5, 6};
+int inputPin[] = {2, 3, 4, 5, 6, 7};
 int inputState[] = {0, 0, 0, 0, 0, 0};
 int outputSize = 6;
 String outputName[] = {"L1", "L2", "L3", "L4", "L5", "L6"};
-int outputPin[] = {7, 8, 9, 10, 11, 13};
+int outputPin[] = {8, 9, 10, 11, 12, 13};
 int outputState[] = {0, 0, 0, 0, 0, 0};
 String blinkName = "";
 unsigned long blinkTime = 0;
 int blinkFreq = 0;
 
-
+unsigned long readTime = 0;
+int readFreq = 1000;
 
 String serialResponse = "";
+
 void setup() {
   Serial.begin(9600);
   Serial.println("Init...");
 
   for (int thisPin = 0; thisPin < inputSize; thisPin++) {
-    pinMode(inputPin[thisPin], INPUT);
+    pinMode(inputPin[thisPin], INPUT_PULLUP);
   }
 
   for (int thisPin = 0; thisPin < outputSize; thisPin++) {
@@ -51,6 +52,7 @@ void loop() {
   }
 
   processBlink();
+  processInputData();
 
   delay(1);
 }
@@ -131,14 +133,28 @@ void processBlink() {
 }
 
 void processInputData() {
-  for (int theItem = 0; theItem < sizeof(inputName); theItem++) {
-    int pin = inputPin[theItem];
-    int val = digitalRead(pin);
-    if (inputState[theItem] != val) {
-      //todo send
-      inputPin[theItem] = val;
+  unsigned long current = millis();
+  if (current > readTime + readFreq) {
+    String str = "";
+    for (int theItem = 0; theItem < inputSize; theItem++) {
+      String name = inputName[theItem];
+      int pin = inputPin[theItem];
+      int val = digitalRead(pin);
+      //Serial.println(name);
+      //Serial.println(val);
+      //Serial.println(theItem+" "+pin+" "+val+" "+name);
+      String tempStr = "";
+      if (val == LOW) {
+        tempStr = "#"+name+"-ON ";
+      } else {
+        tempStr = "#"+name+"-OF ";
+      }
+      str = str + tempStr;
     }
+    Serial.println(str);
+    readTime = current;
   }
+  
 }
 
 
