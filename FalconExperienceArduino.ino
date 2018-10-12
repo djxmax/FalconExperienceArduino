@@ -1,7 +1,8 @@
 /*
-  The Falcon Experience Arduino
-  https://www.facebook.com/thefalconexperience/
+  DigitalReadSerial
+  Reads a digital input on pin 2, prints the result to the serial monitor
 
+  This example code is in the public domain.
 */
 
 int inputSize = 6;
@@ -18,6 +19,8 @@ int blinkFreq = 0;
 
 unsigned long readTime = 0;
 int readFreq = 1000;
+
+int playing = 0;
 
 String serialResponse = "";
 
@@ -40,7 +43,12 @@ void setup() {
 void loop() {
   if (Serial.available()) {
     serialResponse = Serial.readStringUntil('\r\n');
-
+  
+    if (serialResponse.indexOf("$START") > 0) {
+      playing = 1;
+    } else if (serialResponse.indexOf("$STOP") > 0) {
+      playing = 0;
+    }
     // Convert from String Object to String.
     char buf[500];
     serialResponse.toCharArray(buf, sizeof(buf));
@@ -53,6 +61,7 @@ void loop() {
 
   processBlink();
   processInputData();
+  processNotPlaying();
 
   delay(1);
 }
@@ -157,5 +166,12 @@ void processInputData() {
   
 }
 
+void processNotPlaying() {
+  if (playing == 0) {
+    return;
+  }
+  
+  
+}
 
 
