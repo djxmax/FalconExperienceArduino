@@ -82,7 +82,7 @@ void processData(char *str) {
     freq = myString.substring(ind2 + 1);
   }
   
-  Serial.println("Receive item : "+item+", action : "+action+", freq : "+freq);
+  //Serial.println("Receive item : "+item+", action : "+action+", freq : "+freq);
 
   if (action == "ON") {
     for (int theItem = 0; theItem < sizeof(outputName); theItem++) {
@@ -113,6 +113,7 @@ void processData(char *str) {
       blinkFreq = 0;
     }
   }
+  Serial.println("#"+myString);
 }
 
 //#L1-OF #L2-ON$500
